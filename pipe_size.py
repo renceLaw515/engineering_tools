@@ -16,23 +16,23 @@ class WaterPipeManager:
     def size_water_pipe(self):
         result = []
         for idx, l in enumerate(self.flow_list):
-            tmp = -1
+            tmp = (l, -1, None)
             for id, d in enumerate(self.pipe_list):
                 v = self.compute_velocity(l, d)
                 if d <=50:
                     if v <=1.15 * (1+self.tol): 
-                        tmp = d 
+                        tmp = (l,d,v) 
                         break
                 else:
                     if v > 1.15 * (1-self.tol) and v <=2.0:
-                        tmp = d
+                        tmp = (l,d,v)
                         break
             result.append(tmp)    
 
         return result
 
 if __name__ == "__main__":
-## ===== ===== ===== ===== ===== ===== ===== =====
+    ## ===== ===== ===== ===== ===== ===== ===== =====
 ## Parse arguments
 ## ===== ===== ===== ===== ===== ===== ===== =====
 
@@ -49,6 +49,9 @@ if __name__ == "__main__":
     args = parser.parse_args();
 
     worker = WaterPipeManager(args.pipe_dia, args.flow_list, args.tol)
-    print(worker.size_water_pipe())
+    result = worker.size_water_pipe()
+    for l, d, v in result:
+        print(f"Flow: {l}, Diameter: {d}, Velocity: {v}") 
+
 
 
