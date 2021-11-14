@@ -3,7 +3,7 @@ import argparse
 
 class WaterPipeManager:
     
-    def __init__(self, pipe_list, flow_list, low_bound_velocity = 1.5, upper_bound_velocity = 2.0, tol = 0.2):
+    def __init__(self, pipe_list, flow_list, low_bound_velocity, upper_bound_velocity, tol):
 
         self.pipe_list = pipe_list 
         self.flow_list = flow_list
@@ -18,17 +18,19 @@ class WaterPipeManager:
     def size_water_pipe(self):
         result = []
         for idx, l in enumerate(self.flow_list):
+            tmp = -1
             for id, d in enumerate(self.pipe_list):
                 v = self.compute_velocity(l, d)
                 if d <=50:
                     if v <=1.15 * (1+self.tol): 
-                        result.append(d) 
+                        tmp = d 
                         break
                 else:
                     if v > 1.15 * (1-self.tol) and v <=2.0:
-                        result.append(d)
+                        tmp = d
                         break
-        
+            result.append(tmp)    
+
         return result
 
 if __name__ == "__main__":
@@ -47,13 +49,11 @@ if __name__ == "__main__":
     parser.add_argument('--flow_list', action='store',
                     type=float, nargs='*', default=[],
                     help="Flow Rate for consideration")
-    parser.add_argument('--tol', type=float, default=0.1, help='Tolerance');
+    parser.add_argument('--tol', type=float, default=0.2, help='Tolerance');
 
     args = parser.parse_args();
 
-    worker = WaterPipeManager(args.pipe_dia, args.flow_list, args.low_b, args.up_b)
+    worker = WaterPipeManager(args.pipe_dia, args.flow_list, args.low_b, args.up_b, args.tol)
     print(worker.size_water_pipe())
-
-
 
 
